@@ -19,6 +19,7 @@
 html {
   color-scheme: light;
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 html.dark {
@@ -36,6 +37,8 @@ body {
   letter-spacing: -0.005em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  min-width: 0;
 }
 
 ::selection {

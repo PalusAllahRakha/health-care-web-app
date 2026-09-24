@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 interface PatientSignupFormProps {
   onSubmit: (data: PatientSignupInput) => Promise<void>;
@@ -33,6 +34,13 @@ interface ProviderSignupFormProps {
   onSubmit: (data: ProviderSignupInput) => Promise<void>;
   error: string | null;
 }
+
+const formShellClass =
+  "flex h-full min-h-0 min-w-0 flex-col";
+const fieldsScrollClass =
+  "min-h-0 flex-1 space-y-3.5 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch] pr-1 sm:space-y-4";
+const formFooterClass =
+  "shrink-0 space-y-3 border-t border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] pt-3.5 sm:pt-4";
 
 export function PatientSignupForm({ onSubmit, error }: PatientSignupFormProps) {
   const {
@@ -53,42 +61,125 @@ export function PatientSignupForm({ onSubmit, error }: PatientSignupFormProps) {
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="patient-firstName">First name</Label>
-          <Input id="patient-firstName" className="h-12" autoComplete="given-name" {...register("firstName")} aria-invalid={!!errors.firstName} />
-          {errors.firstName && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.firstName.message}</p>}
+    <form onSubmit={handleSubmit(onSubmit)} className={formShellClass} noValidate>
+      <div className={fieldsScrollClass}>
+        <div className="grid grid-cols-1 gap-3.5 min-[420px]:grid-cols-2 sm:gap-4">
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="patient-firstName">First name</Label>
+            <Input
+              id="patient-firstName"
+              className="h-11 w-full sm:h-12"
+              autoComplete="given-name"
+              {...register("firstName")}
+              aria-invalid={!!errors.firstName}
+            />
+            {errors.firstName && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.firstName.message}
+              </p>
+            )}
+          </div>
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="patient-lastName">Last name</Label>
+            <Input
+              id="patient-lastName"
+              className="h-11 w-full sm:h-12"
+              autoComplete="family-name"
+              {...register("lastName")}
+              aria-invalid={!!errors.lastName}
+            />
+            {errors.lastName && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.lastName.message}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="patient-lastName">Last name</Label>
-          <Input id="patient-lastName" className="h-12" autoComplete="family-name" {...register("lastName")} aria-invalid={!!errors.lastName} />
-          {errors.lastName && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.lastName.message}</p>}
+        <div className="min-w-0 space-y-2">
+          <Label htmlFor="patient-email">Email address</Label>
+          <Input
+            id="patient-email"
+            type="email"
+            className="h-11 w-full sm:h-12"
+            autoComplete="email"
+            {...register("email")}
+            aria-invalid={!!errors.email}
+          />
+          {errors.email && (
+            <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+              {errors.email.message}
+            </p>
+          )}
         </div>
+        <div className="grid grid-cols-1 gap-3.5 min-[420px]:grid-cols-2 sm:gap-4">
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="patient-phone">Phone</Label>
+            <Input
+              id="patient-phone"
+              type="tel"
+              className="h-11 w-full sm:h-12"
+              autoComplete="tel"
+              placeholder="(555) 000-0000"
+              {...register("phone")}
+              aria-invalid={!!errors.phone}
+            />
+            {errors.phone && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.phone.message}
+              </p>
+            )}
+          </div>
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="patient-dob">Date of birth</Label>
+            <Input
+              id="patient-dob"
+              type="date"
+              className="h-11 w-full min-w-0 sm:h-12"
+              {...register("dateOfBirth")}
+              aria-invalid={!!errors.dateOfBirth}
+            />
+            {errors.dateOfBirth && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.dateOfBirth.message}
+              </p>
+            )}
+          </div>
+        </div>
+        <AuthPasswordField
+          id="patient-password"
+          label="Password"
+          registration={register("password")}
+          error={errors.password?.message}
+        />
+        <AuthPasswordField
+          id="patient-confirmPassword"
+          label="Confirm password"
+          registration={register("confirmPassword")}
+          error={errors.confirmPassword?.message}
+        />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="patient-email">Email address</Label>
-        <Input id="patient-email" type="email" className="h-12" autoComplete="email" {...register("email")} aria-invalid={!!errors.email} />
-        {errors.email && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.email.message}</p>}
+
+      <div className={formFooterClass}>
+        {error && (
+          <p
+            className="rounded-lg bg-[var(--color-status-critical-bg)] px-3 py-3 text-sm text-[var(--color-status-critical-text)]"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
+        <Button type="submit" className="h-11 w-full sm:h-12" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <HealthSpinner size={16} /> Creating account…
+            </>
+          ) : (
+            <>
+              Create patient account <ArrowRight className="size-4 shrink-0" aria-hidden />
+            </>
+          )}
+        </Button>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="patient-phone">Phone</Label>
-          <Input id="patient-phone" type="tel" className="h-12" autoComplete="tel" placeholder="(555) 000-0000" {...register("phone")} aria-invalid={!!errors.phone} />
-          {errors.phone && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.phone.message}</p>}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="patient-dob">Date of birth</Label>
-          <Input id="patient-dob" type="date" className="h-12" {...register("dateOfBirth")} aria-invalid={!!errors.dateOfBirth} />
-          {errors.dateOfBirth && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.dateOfBirth.message}</p>}
-        </div>
-      </div>
-      <AuthPasswordField id="patient-password" label="Password" registration={register("password")} error={errors.password?.message} />
-      <AuthPasswordField id="patient-confirmPassword" label="Confirm password" registration={register("confirmPassword")} error={errors.confirmPassword?.message} />
-      {error && <p className="rounded-lg bg-[var(--color-status-critical-bg)] px-3 py-3 text-sm text-[var(--color-status-critical-text)]" role="alert">{error}</p>}
-      <Button type="submit" className="h-12 w-full" disabled={isSubmitting}>
-        {isSubmitting ? <><HealthSpinner size={16} /> Creating account…</> : <>Create patient account <ArrowRight className="size-4" aria-hidden /></>}
-      </Button>
     </form>
   );
 }
@@ -114,64 +205,157 @@ export function ProviderSignupForm({ onSubmit, error }: ProviderSignupFormProps)
   });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="provider-firstName">First name</Label>
-          <Input id="provider-firstName" className="h-12" autoComplete="given-name" {...register("firstName")} aria-invalid={!!errors.firstName} />
-          {errors.firstName && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.firstName.message}</p>}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="provider-lastName">Last name</Label>
-          <Input id="provider-lastName" className="h-12" autoComplete="family-name" {...register("lastName")} aria-invalid={!!errors.lastName} />
-          {errors.lastName && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.lastName.message}</p>}
-        </div>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="provider-email">Work email</Label>
-        <Input id="provider-email" type="email" className="h-12" autoComplete="email" {...register("email")} aria-invalid={!!errors.email} />
-        {errors.email && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.email.message}</p>}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="provider-phone">Phone</Label>
-        <Input id="provider-phone" type="tel" className="h-12" autoComplete="tel" placeholder="(555) 000-0000" {...register("phone")} aria-invalid={!!errors.phone} />
-        {errors.phone && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.phone.message}</p>}
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="provider-specialty">Specialty</Label>
-          <Controller
-            name="specialty"
-            control={control}
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger id="provider-specialty" className="h-12" aria-invalid={!!errors.specialty}>
-                  <SelectValue placeholder="Select specialty" />
-                </SelectTrigger>
-                <SelectContent>
-                  {PROVIDER_SIGNUP_SPECIALTIES.map((specialty) => (
-                    <SelectItem key={specialty} value={specialty}>
-                      {specialty}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+    <form onSubmit={handleSubmit(onSubmit)} className={formShellClass} noValidate>
+      <div className={fieldsScrollClass}>
+        <div className="grid grid-cols-1 gap-3.5 min-[420px]:grid-cols-2 sm:gap-4">
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="provider-firstName">First name</Label>
+            <Input
+              id="provider-firstName"
+              className="h-11 w-full sm:h-12"
+              autoComplete="given-name"
+              {...register("firstName")}
+              aria-invalid={!!errors.firstName}
+            />
+            {errors.firstName && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.firstName.message}
+              </p>
             )}
+          </div>
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="provider-lastName">Last name</Label>
+            <Input
+              id="provider-lastName"
+              className="h-11 w-full sm:h-12"
+              autoComplete="family-name"
+              {...register("lastName")}
+              aria-invalid={!!errors.lastName}
+            />
+            {errors.lastName && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.lastName.message}
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="min-w-0 space-y-2">
+          <Label htmlFor="provider-email">Work email</Label>
+          <Input
+            id="provider-email"
+            type="email"
+            className="h-11 w-full sm:h-12"
+            autoComplete="email"
+            {...register("email")}
+            aria-invalid={!!errors.email}
           />
-          {errors.specialty && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.specialty.message}</p>}
+          {errors.email && (
+            <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+              {errors.email.message}
+            </p>
+          )}
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="provider-license">License number</Label>
-          <Input id="provider-license" className="h-12" placeholder="OR-MD-00000" {...register("licenseNumber")} aria-invalid={!!errors.licenseNumber} />
-          {errors.licenseNumber && <p className="text-sm text-[var(--color-status-critical)]" role="alert">{errors.licenseNumber.message}</p>}
+        <div className="min-w-0 space-y-2">
+          <Label htmlFor="provider-phone">Phone</Label>
+          <Input
+            id="provider-phone"
+            type="tel"
+            className="h-11 w-full sm:h-12"
+            autoComplete="tel"
+            placeholder="(555) 000-0000"
+            {...register("phone")}
+            aria-invalid={!!errors.phone}
+          />
+          {errors.phone && (
+            <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+              {errors.phone.message}
+            </p>
+          )}
         </div>
+        <div className="grid grid-cols-1 gap-3.5 min-[420px]:grid-cols-2 sm:gap-4">
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="provider-specialty">Specialty</Label>
+            <Controller
+              name="specialty"
+              control={control}
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger
+                    id="provider-specialty"
+                    className="h-11 w-full min-w-0 sm:h-12"
+                    aria-invalid={!!errors.specialty}
+                  >
+                    <SelectValue placeholder="Select specialty" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROVIDER_SIGNUP_SPECIALTIES.map((specialty) => (
+                      <SelectItem key={specialty} value={specialty}>
+                        {specialty}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.specialty && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.specialty.message}
+              </p>
+            )}
+          </div>
+          <div className="min-w-0 space-y-2">
+            <Label htmlFor="provider-license">License number</Label>
+            <Input
+              id="provider-license"
+              className="h-11 w-full sm:h-12"
+              placeholder="OR-MD-00000"
+              {...register("licenseNumber")}
+              aria-invalid={!!errors.licenseNumber}
+            />
+            {errors.licenseNumber && (
+              <p className="text-sm text-[var(--color-status-critical)]" role="alert">
+                {errors.licenseNumber.message}
+              </p>
+            )}
+          </div>
+        </div>
+        <AuthPasswordField
+          id="provider-password"
+          label="Password"
+          registration={register("password")}
+          error={errors.password?.message}
+        />
+        <AuthPasswordField
+          id="provider-confirmPassword"
+          label="Confirm password"
+          registration={register("confirmPassword")}
+          error={errors.confirmPassword?.message}
+        />
       </div>
-      <AuthPasswordField id="provider-password" label="Password" registration={register("password")} error={errors.password?.message} />
-      <AuthPasswordField id="provider-confirmPassword" label="Confirm password" registration={register("confirmPassword")} error={errors.confirmPassword?.message} />
-      {error && <p className="rounded-lg bg-[var(--color-status-critical-bg)] px-3 py-3 text-sm text-[var(--color-status-critical-text)]" role="alert">{error}</p>}
-      <Button type="submit" className="h-12 w-full" disabled={isSubmitting}>
-        {isSubmitting ? <><HealthSpinner size={16} /> Submitting request…</> : <>Submit for admin approval <ArrowRight className="size-4" aria-hidden /></>}
-      </Button>
+
+      <div className={formFooterClass}>
+        {error && (
+          <p
+            className="rounded-lg bg-[var(--color-status-critical-bg)] px-3 py-3 text-sm text-[var(--color-status-critical-text)]"
+            role="alert"
+          >
+            {error}
+          </p>
+        )}
+        <Button type="submit" className="h-11 w-full sm:h-12" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <HealthSpinner size={16} /> Submitting…
+            </>
+          ) : (
+            <>
+              <span className="sm:hidden">Submit for approval</span>
+              <span className="hidden sm:inline">Submit for admin approval</span>
+              <ArrowRight className="size-4 shrink-0" aria-hidden />
+            </>
+          )}
+        </Button>
+      </div>
     </form>
   );
 }
@@ -188,23 +372,21 @@ export function SignupFormByRole({
   error: string | null;
 }) {
   return (
-    <div className="grid">
+    <div className="grid min-h-0 min-w-0 flex-1 grid-rows-1 overflow-hidden">
       <div
-        className={
-          role === "patient"
-            ? "col-start-1 row-start-1"
-            : "col-start-1 row-start-1 invisible pointer-events-none"
-        }
+        className={cn(
+          "col-start-1 row-start-1 min-h-0 min-w-0",
+          role !== "patient" && "invisible pointer-events-none"
+        )}
         aria-hidden={role !== "patient"}
       >
         <PatientSignupForm onSubmit={onPatientSubmit} error={role === "patient" ? error : null} />
       </div>
       <div
-        className={
-          role === "provider"
-            ? "col-start-1 row-start-1"
-            : "col-start-1 row-start-1 invisible pointer-events-none"
-        }
+        className={cn(
+          "col-start-1 row-start-1 min-h-0 min-w-0",
+          role !== "provider" && "invisible pointer-events-none"
+        )}
         aria-hidden={role !== "provider"}
       >
         <ProviderSignupForm onSubmit={onProviderSubmit} error={role === "provider" ? error : null} />

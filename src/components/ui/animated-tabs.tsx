@@ -73,9 +73,9 @@ export function AnimatedTabs<T extends string = string>({
             disabled={option.disabled}
             onClick={() => onValueChange(option.value)}
             className={cn(
-              "relative z-0 inline-flex items-center justify-center gap-1.5 rounded-[var(--radius-sm)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)] disabled:pointer-events-none disabled:opacity-50",
-              fit === "equal" ? "h-full min-h-0 w-full" : "min-h-8",
-              size === "sm" ? "px-2.5 py-1.5 text-xs" : "px-3 py-2 text-sm",
+              "relative z-0 inline-flex items-center justify-center gap-1 rounded-[var(--radius-sm)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-surface)] disabled:pointer-events-none disabled:opacity-50 sm:gap-1.5",
+              fit === "equal" ? "h-full min-h-0 w-full min-w-0" : "min-h-8",
+              size === "sm" ? "px-2 py-1.5 text-[11px] sm:px-2.5 sm:text-xs" : "px-2 py-2 text-xs sm:px-3 sm:text-sm",
               selected
                 ? "text-[var(--color-text-primary)]"
                 : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]",

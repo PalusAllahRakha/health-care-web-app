@@ -74,19 +74,22 @@ export default function MfaPage() {
   }
 
   return (
-    <AuthLayout title={"A little more security.\nA lot more peace of mind."} subtitle="Your health information is personal. A second verification step helps keep your account in your hands.">
-      <div className="absolute right-4 top-5 sm:right-8"><ThemeToggle /></div>
+    <AuthLayout
+      title={"A little more security.\nA lot more peace of mind."}
+      subtitle="Your health information is personal. A second verification step helps keep your account in your hands."
+      headerActions={<ThemeToggle />}
+    >
       <MotionSection delay={0.05}>
-        <div className="mb-8">
-          <div className="mb-6 flex size-12 items-center justify-center rounded-xl bg-[var(--color-brand-primary)]/10 text-[var(--color-brand-primary)]"><ShieldCheck className="size-6" aria-hidden /></div>
+        <div className="mb-6 sm:mb-8">
+          <div className="mb-5 flex size-11 items-center justify-center rounded-xl bg-[var(--color-brand-primary)]/10 text-[var(--color-brand-primary)] sm:mb-6 sm:size-12"><ShieldCheck className="size-5 sm:size-6" aria-hidden /></div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-primary)]">Two-step verification</p>
-          <h1 className="mt-3 text-3xl font-semibold tracking-[-0.035em]">One more step.</h1>
-          <p className="mt-3 text-sm leading-6 text-[var(--color-text-secondary)]">Enter the six-digit code from your authenticator app to securely access your portal.</p>
+          <h1 className="mt-2 text-2xl font-semibold tracking-[-0.035em] sm:mt-3 sm:text-3xl">One more step.</h1>
+          <p className="mt-2 text-sm leading-6 text-[var(--color-text-secondary)] sm:mt-3">Enter the six-digit code from your authenticator app to securely access your portal.</p>
         </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 sm:space-y-6">
           <div>
             <p id="code-label" className="mb-3 text-sm font-medium">Verification code</p>
-            <div className="flex gap-2 sm:gap-3" role="group" aria-labelledby="code-label" onPaste={handlePaste}>
+            <div className="flex gap-1.5 sm:gap-3" role="group" aria-labelledby="code-label" onPaste={handlePaste}>
               {digits.map((digit, index) => (
                 <Input
                   key={index}
@@ -99,7 +102,7 @@ export default function MfaPage() {
                   onKeyDown={(event) => handleKeyDown(index, event)}
                   onFocus={(event) => event.target.select()}
                   disabled={isSubmitting}
-                  className={cn("h-14 min-w-0 flex-1 px-0 text-center text-xl font-semibold", digit && "border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/5")}
+                  className={cn("h-12 min-w-0 flex-1 px-0 text-center text-lg font-semibold sm:h-14 sm:text-xl", digit && "border-[var(--color-brand-primary)] bg-[var(--color-brand-primary)]/5")}
                   aria-label={`Digit ${index + 1}`}
                   aria-invalid={!!error}
                   aria-describedby={error ? "code-error" : undefined}
@@ -108,7 +111,7 @@ export default function MfaPage() {
             </div>
           </div>
           {error && <p id="code-error" className="rounded-lg bg-[var(--color-status-critical-bg)] px-3 py-3 text-sm text-[var(--color-status-critical-text)]" role="alert">{error}</p>}
-          <Button type="submit" className="h-12 w-full" disabled={digits.join("").length !== 6 || isSubmitting}>
+          <Button type="submit" className="h-11 w-full sm:h-12" disabled={digits.join("").length !== 6 || isSubmitting}>
             {isSubmitting ? <><HealthSpinner size={16} /> Verifying…</> : <>Verify & continue <ArrowRight className="size-4" aria-hidden /></>}
           </Button>
           <div className="rounded-xl border border-[var(--color-border-subtle)] bg-[var(--color-surface)] px-4 py-3.5">

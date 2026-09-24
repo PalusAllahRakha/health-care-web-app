@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Stethoscope, UserRound } from "lucide-react";
 import type { SignupRole } from "@/lib/auth/registered-accounts";
 import { AnimatedTabs } from "@/components/ui/animated-tabs";
@@ -8,8 +9,8 @@ export interface AuthRoleTabsProps {
   value: SignupRole;
   onValueChange: (role: SignupRole) => void;
   className?: string;
-  patientLabel?: string;
-  providerLabel?: string;
+  patientLabel?: ReactNode;
+  providerLabel?: ReactNode;
   layoutId?: string;
 }
 

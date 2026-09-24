@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, ShieldCheck } from "lucide-react";
+import { Mail, ShieldCheck, LogOut } from "lucide-react";
 import { HealthSpinner } from "@/components/shared/health-spinner";
 import { useAuth } from "@/providers/auth-provider";
 import type { UserRole } from "@/types";
@@ -95,7 +95,7 @@ function PreferenceRow({
 }
 
 export function ProfilePageContent() {
-  const { user, profile, updateProfile } = useAuth();
+  const { user, profile, updateProfile, logout } = useAuth();
   const role = user?.role ?? "patient";
   const schema = getSchema(role);
   const [tab, setTab] = useState<ProfileTab>("personal");
@@ -244,15 +244,16 @@ export function ProfilePageContent() {
           onValueChange={setTab}
           layoutId="profile-section-tabs"
           ariaLabel="Profile sections"
-          fit="hug"
+          fit="equal"
           size="sm"
+          className="w-full"
           options={[
             { value: "personal", label: "Personal" },
             {
               value: "role",
-              label: role === "patient" ? "Health info" : role === "provider" ? "Practice" : "Work",
+              label: role === "patient" ? "Health" : role === "provider" ? "Practice" : "Work",
             },
-            { value: "notifications", label: "Notifications" },
+            { value: "notifications", label: "Alerts" },
             { value: "security", label: "Security" },
           ]}
         />
@@ -461,12 +462,12 @@ export function ProfilePageContent() {
           )}
 
           {tab !== "security" && (
-          <div className="sticky bottom-20 z-10 mt-6 flex items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)]/95 p-4 backdrop-blur lg:bottom-4">
-            <p className="flex items-center gap-2 text-sm text-[var(--color-text-disabled)]">
-              <ShieldCheck className="h-4 w-4 text-[var(--color-brand-primary)]" />
-              Your data is encrypted and HIPAA-protected
+          <div className="sticky bottom-20 z-10 mt-6 flex flex-col gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)]/95 p-3 backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-4 lg:bottom-4">
+            <p className="flex min-w-0 items-center gap-2 text-xs text-[var(--color-text-disabled)] sm:text-sm">
+              <ShieldCheck className="h-4 w-4 shrink-0 text-[var(--color-brand-primary)]" />
+              <span className="min-w-0">Your data is encrypted and HIPAA-protected</span>
             </p>
-            <Button type="submit" disabled={isSubmitting || !isDirty} className="min-w-[120px]">
+            <Button type="submit" disabled={isSubmitting || !isDirty} className="w-full min-w-0 sm:w-auto sm:min-w-[120px]">
               {isSubmitting ? (
                 <>
                   <HealthSpinner size={16} className="mr-2" />
@@ -480,7 +481,28 @@ export function ProfilePageContent() {
           )}
         </form>
 
-        {tab === "security" && <ChangePasswordForm />}
+        {tab === "security" && (
+          <div className="space-y-6">
+            <ChangePasswordForm />
+            <Card>
+              <CardHeader>
+                <CardTitle>Sign out</CardTitle>
+                <CardDescription>End your session on this device.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="h-11 w-full gap-2 sm:w-auto"
+                  onClick={() => logout()}
+                >
+                  <LogOut className="h-4 w-4" aria-hidden />
+                  Sign out of HealthPortal
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
