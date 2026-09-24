@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "appointments": "Appointments",
+    "labResults": "Lab Results",
+    "prescriptions": "Prescriptions",
+    "messages": "Messages",
+    "insurance": "Insurance",
+    "notifications": "Notifications",
+    "doctors": "Doctors"
+  },
+  "actions": {
+    "book": "Book appointment",
+    "save": "Save",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "markAllRead": "Mark all as read"
+  },
+  "auth": {
+    "welcome": "Welcome back",
+    "mfaTitle": "Two-factor authentication",
+    "trustCopy": "Your health information is encrypted and HIPAA-protected"
+  },
+  "empty": {
+    "noAppointments": "No upcoming appointments",
+    "noResults": "No lab results yet",
+    "noPrescriptions": "No active prescriptions"
+  }
+}
