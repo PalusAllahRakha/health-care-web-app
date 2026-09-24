@@ -7,8 +7,8 @@ import { notificationGroups, notifications as defaultNotifications } from "@/lib
 import { useNotificationStore } from "@/stores/notification-store";
 import { NotificationItem } from "@/components/notifications/notification-item";
 import { EmptyState } from "@/components/shared/empty-state";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { drawerSlide, getTransition, overlayFade } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import type { Notification } from "@/types";
@@ -19,6 +19,8 @@ export interface NotificationCenterProps {
   className?: string;
 }
 
+type NotificationTab = "all" | Notification["type"];
+
 export function NotificationCenter({
   notifications: notificationsProp,
   mode = "drawer",
@@ -28,6 +30,9 @@ export function NotificationCenter({
   const [items, setItems] = useState<Notification[]>(
     notificationsProp ?? defaultNotifications
   );
+  const [tab, setTab] = useState<NotificationTab>("all");
+  const reduced = useReducedMotion() ?? false;
+  const transition = getTransition(reduced);
 
   const grouped = useMemo(() => {
     return notificationGroups.map((group) => ({
@@ -35,6 +40,19 @@ export function NotificationCenter({
       notifications: items.filter((n) => n.type === group.type),
     }));
   }, [items]);
+
+  const tabOptions = useMemo(
+    () => [
+      { value: "all" as const, label: "All" },
+      ...grouped.map((g) => ({ value: g.type as NotificationTab, label: g.label })),
+    ],
+    [grouped]
+  );
+
+  const visibleItems = useMemo(() => {
+    if (tab === "all") return items;
+    return items.filter((n) => n.type === tab);
+  }, [items, tab]);
 
   const handleRead = useCallback((id: string) => {
     setItems((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
@@ -48,19 +66,6 @@ export function NotificationCenter({
     setItems((prev) => prev.map((n) => ({ ...n, read: true })));
     markAllRead();
   }, [markAllRead]);
-
-  const reduced = useReducedMotion() ?? false;
-
-  const renderList = (list: Notification[]) =>
-    list.length > 0 ? (
-      <div className="space-y-0.5 p-2">
-        {list.map((n) => (
-          <NotificationItem key={n.id} notification={n} onRead={handleRead} onNavigate={handleNavigate} />
-        ))}
-      </div>
-    ) : (
-      <EmptyState icon={Inbox} title="No notifications" description="You're all caught up in this category." className="m-4 border-none bg-transparent" />
-    );
 
   const content = (
     <>
@@ -88,32 +93,63 @@ export function NotificationCenter({
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="flex flex-1 flex-col overflow-hidden">
-        <TabsList className="mx-4 mt-3 flex h-auto flex-wrap gap-1 bg-[var(--color-surface-muted)] p-1">
-          <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-          {grouped.map((g) => (
-            <TabsTrigger key={g.type} value={g.type} className="text-xs">
-              {g.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="mx-4 mt-3">
+          <AnimatedTabs
+            value={tab}
+            onValueChange={setTab}
+            options={tabOptions}
+            layoutId={`notifications-tabs-${mode}`}
+            ariaLabel="Filter notifications"
+            fit="hug"
+            size="sm"
+            className="w-full"
+          />
+        </div>
 
-        <TabsContent value="all" className="flex-1 overflow-y-auto">
-          {renderList(items)}
-        </TabsContent>
-
-        {grouped.map((g) => (
-          <TabsContent key={g.type} value={g.type} className="flex-1 overflow-y-auto">
-            {renderList(g.notifications)}
-          </TabsContent>
-        ))}
-      </Tabs>
+        <div className="flex-1 overflow-y-auto">
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={tab}
+              initial={reduced ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={reduced ? undefined : { opacity: 0, y: -6 }}
+              transition={transition}
+            >
+              {visibleItems.length > 0 ? (
+                <div className="space-y-0.5 p-2">
+                  {visibleItems.map((n) => (
+                    <NotificationItem
+                      key={n.id}
+                      notification={n}
+                      onRead={handleRead}
+                      onNavigate={handleNavigate}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <EmptyState
+                  icon={Inbox}
+                  title="No notifications"
+                  description="You're all caught up in this category."
+                  className="m-4 border-none bg-transparent"
+                />
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
     </>
   );
 
   if (mode === "page") {
     return (
-      <div className={cn("flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] shadow-[var(--shadow-subtle),var(--shadow-inset)]", className)}>
+      <div
+        className={cn(
+          "flex flex-col overflow-hidden rounded-[var(--radius-xl)] border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] shadow-[var(--shadow-subtle),var(--shadow-inset)]",
+          className
+        )}
+      >
         {content}
       </div>
     );

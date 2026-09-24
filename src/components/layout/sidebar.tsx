@@ -96,7 +96,7 @@ export const Sidebar = memo(function Sidebar({ notificationCount = 3 }: { notifi
               {group.items.map((item) => {
                 const Icon = item.icon;
                 const isActive = isNavItemActive(pathname, item.href, allHrefs);
-                const badge = item.href === "/notifications" ? notificationCount : item.badge;
+                const badge = item.href.endsWith("/notifications") ? notificationCount : item.badge;
 
                 return (
                   <li key={item.href}>

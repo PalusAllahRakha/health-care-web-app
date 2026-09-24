@@ -3,7 +3,7 @@ import type { UserRole } from "@/types";
 export function getRoleHomePath(role: UserRole): string {
   switch (role) {
     case "provider":
-      return "/provider/patients";
+      return "/provider/dashboard";
     case "admin":
       return "/admin/overview";
     default:

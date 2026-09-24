@@ -13,7 +13,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex h-11 min-h-11 items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface-muted)] p-1 text-[var(--color-text-secondary)]",
+      "inline-flex h-11 min-h-11 items-stretch justify-center rounded-[var(--radius-md)] bg-[var(--color-surface-muted)] p-1 text-[var(--color-text-secondary)]",
       className
     )}
     {...props}
@@ -28,7 +28,7 @@ const TabsTrigger = React.forwardRef<
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
-      "inline-flex min-h-9 min-w-11 cursor-pointer items-center justify-center whitespace-nowrap rounded-[var(--radius-sm)] px-3 py-1.5 text-sm font-medium ring-offset-[var(--color-surface)] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-[var(--color-surface-elevated)] data-[state=active]:text-[var(--color-text-primary)] data-[state=active]:shadow-[var(--shadow-subtle)]",
+      "inline-flex h-full min-h-0 min-w-11 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] px-3 text-sm font-medium ring-offset-[var(--color-surface)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-[var(--color-surface-elevated)] data-[state=active]:text-[var(--color-text-primary)] data-[state=active]:shadow-[var(--shadow-subtle)] [&_svg]:size-3.5 [&_svg]:shrink-0",
       className
     )}
     {...props}
@@ -43,7 +43,7 @@ const TabsContent = React.forwardRef<
   <TabsPrimitive.Content
     ref={ref}
     className={cn(
-      "mt-4 ring-offset-[var(--color-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2",
+      "mt-4 ring-offset-[var(--color-surface)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 data-[state=inactive]:hidden",
       className
     )}
     {...props}

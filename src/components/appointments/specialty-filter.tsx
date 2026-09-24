@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo } from "react";
 import { doctors } from "@/lib/mock-data";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 import { cn } from "@/lib/utils";
 
 export interface SpecialtyFilterProps {
@@ -26,32 +27,27 @@ export function SpecialtyFilter({
 
   const activeValue = selected ?? value ?? "all";
 
-  const handleSelect = useCallback(
-    (specialty: string) => onChange(specialty),
-    [onChange]
+  const options = useMemo(
+    () =>
+      specialties.map((specialty) => ({
+        value: specialty,
+        label: specialty === "all" ? "All specialties" : specialty,
+      })),
+    [specialties]
   );
 
+  const handleSelect = useCallback((specialty: string) => onChange(specialty), [onChange]);
+
   return (
-    <div className={cn("flex flex-wrap gap-2 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] p-2 shadow-[var(--shadow-subtle)]", className)} role="group" aria-label="Filter by specialty">
-      {specialties.map((specialty) => {
-        const isActive = activeValue === specialty;
-        const label = specialty === "all" ? "All specialties" : specialty;
-        return (
-          <button
-            key={specialty}
-            type="button"
-            onClick={() => handleSelect(specialty)}
-            className={cn(
-              "cursor-pointer rounded-[var(--radius-md)] px-3.5 py-2 text-sm font-medium transition-all",
-              isActive
-                ? "bg-[var(--color-brand-primary)] text-white shadow-[var(--shadow-glow)]"
-                : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-muted)] hover:text-[var(--color-text-primary)]"
-            )}
-          >
-            {label}
-          </button>
-        );
-      })}
-    </div>
+    <AnimatedTabs
+      value={activeValue}
+      onValueChange={handleSelect}
+      options={options}
+      layoutId="appointments-specialty-tabs"
+      ariaLabel="Filter by specialty"
+      fit="hug"
+      size="sm"
+      className={cn("w-full border border-[var(--color-border-subtle)] bg-[var(--color-surface-muted)] shadow-[var(--shadow-subtle)]", className)}
+    />
   );
 }

@@ -1,10 +1,13 @@
 "use client";
 
+import Link from "next/link";
+import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { PageLayout } from "@/components/shared/page-layout";
 import { SectionLoader } from "@/components/shared/section-loader";
 import { DataTable } from "@/components/shared/data-table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { usePatients } from "@/lib/api/queries";
 import type { Patient } from "@/types";
@@ -53,6 +56,20 @@ const columns = [
       <Badge variant={p.status === "active" ? "success" : "secondary"} className="capitalize">
         {p.status}
       </Badge>
+    ),
+  },
+  {
+    key: "actions",
+    header: "Action",
+    cell: (p: Patient) => (
+      <div className="flex gap-2">
+        <Button asChild size="sm" variant="outline" className="min-w-0">
+          <Link href="/provider/messages/thread-001">Message</Link>
+        </Button>
+        <Button size="sm" className="min-w-0" onClick={() => toast.success("Chart note saved", { description: `Added to ${p.name}'s chart.` })}>
+          Add note
+        </Button>
+      </div>
     ),
   },
 ];

@@ -15,7 +15,7 @@ import { ReadyPickupBanner } from "@/components/prescriptions/ready-pickup-banne
 import { RefillHistory } from "@/components/prescriptions/refill-history";
 import { RefillModal } from "@/components/prescriptions/refill-modal";
 import { RefillRequestsPanel } from "@/components/prescriptions/refill-requests-panel";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 import { toast } from "@/components/ui/toaster";
 import { usePrescriptions } from "@/lib/api/queries";
 import { isAttentionPrescription } from "@/lib/refill-utils";
@@ -24,6 +24,12 @@ import { useRefillStore } from "@/stores/refill-store";
 import type { Prescription, RefillPickupMethod, RefillRequestType } from "@/types";
 
 type FilterTab = "all" | "attention" | "in_progress";
+
+const FILTER_OPTIONS: { value: FilterTab; label: string }[] = [
+  { value: "all", label: "All" },
+  { value: "attention", label: "Needs attention" },
+  { value: "in_progress", label: "In progress" },
+];
 
 export default function PrescriptionsPage() {
   const { data: prescriptions, isLoading } = usePrescriptions();
@@ -167,13 +173,15 @@ export default function PrescriptionsPage() {
         <div className="max-w-md flex-1">
           <PharmacySelector value={pharmacy} onChange={setPharmacy} />
         </div>
-        <Tabs value={filter} onValueChange={(v) => setFilter(v as FilterTab)}>
-          <TabsList>
-            <TabsTrigger value="all">All</TabsTrigger>
-            <TabsTrigger value="attention">Needs attention</TabsTrigger>
-            <TabsTrigger value="in_progress">In progress</TabsTrigger>
-          </TabsList>
-        </Tabs>
+        <AnimatedTabs
+          value={filter}
+          onValueChange={setFilter}
+          options={FILTER_OPTIONS}
+          layoutId="prescriptions-filter-tabs"
+          ariaLabel="Filter prescriptions"
+          fit="hug"
+          size="sm"
+        />
       </div>
 
       {isLoading ? (

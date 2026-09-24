@@ -9,11 +9,12 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { SectionLoader } from "@/components/shared/section-loader";
 import { MotionGrid } from "@/components/motion/motion-grid";
 import { DoctorProfileCard } from "@/components/doctors/doctor-profile-card";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toaster";
 import { useDoctors } from "@/lib/api/queries";
 import { useBookingStore } from "@/stores/booking-store";
-import { cn, formatDate, formatTime } from "@/lib/utils";
+import { formatDate, formatTime } from "@/lib/utils";
 
 export default function DoctorsPage() {
   const { data: doctors, isLoading } = useDoctors();
@@ -22,12 +23,13 @@ export default function DoctorsPage() {
   const [bookingOpen, setBookingOpen] = useState(false);
   const booking = useBookingStore();
   const specialties = ["All specialties", ...new Set(doctors?.map((doctor) => doctor.specialty) ?? [])];
+  const specialtyOptions = specialties.map((item) => ({ value: item, label: item }));
 
   const filtered = doctors?.filter(
     (d) =>
       (specialty === "All specialties" || d.specialty === specialty) &&
       (d.name.toLowerCase().includes(query.toLowerCase()) ||
-      d.specialty.toLowerCase().includes(query.toLowerCase()))
+        d.specialty.toLowerCase().includes(query.toLowerCase()))
   );
 
   function bookDoctor(doctorId: string) {
@@ -64,16 +66,15 @@ export default function DoctorsPage() {
             {isLoading ? "Finding your care team…" : `${filtered?.length ?? 0} providers found`}
           </p>
         </div>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by specialty">
-          {specialties.map((item) => (
-            <button key={item} type="button" aria-pressed={specialty === item} onClick={() => setSpecialty(item)} className={cn(
-              "min-h-10 rounded-lg border px-3.5 py-2 text-xs font-medium transition-colors",
-              specialty === item
-                ? "border-[var(--color-brand-primary)] bg-[var(--color-brand-tint)] text-[var(--color-brand-strong)]"
-                : "border-[var(--color-border-subtle)] bg-[var(--color-surface-elevated)] text-[var(--color-text-secondary)] hover:border-[var(--color-border-strong)]"
-            )}>{item}</button>
-          ))}
-        </div>
+        <AnimatedTabs
+          value={specialty}
+          onValueChange={setSpecialty}
+          options={specialtyOptions}
+          layoutId="doctors-specialty-tabs"
+          ariaLabel="Filter by specialty"
+          fit="hug"
+          size="sm"
+        />
       </div>
 
       {isLoading ? (

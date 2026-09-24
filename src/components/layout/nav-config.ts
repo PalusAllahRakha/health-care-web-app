@@ -61,9 +61,28 @@ const patientNav: NavGroup[] = [
 
 const providerNav: NavGroup[] = [
   {
-    title: "Work",
+    title: "Overview",
+    items: [{ label: "Dashboard", href: "/provider/dashboard", icon: LayoutDashboard }],
+  },
+  {
+    title: "Clinic",
     items: [
+      { label: "Schedule", href: "/provider/schedule", icon: Calendar },
       { label: "Patient Queue", href: "/provider/patients", icon: Users },
+    ],
+  },
+  {
+    title: "Clinical",
+    items: [
+      { label: "Lab Review", href: "/provider/labs", icon: FlaskConical },
+      { label: "Prescriptions", href: "/provider/prescriptions", icon: Pill },
+    ],
+  },
+  {
+    title: "Inbox",
+    items: [
+      { label: "Messages", href: "/provider/messages", icon: MessageSquare, badge: 4 },
+      { label: "Notifications", href: "/provider/notifications", icon: Bell, badge: 4 },
     ],
   },
   {
@@ -78,6 +97,7 @@ const adminNav: NavGroup[] = [
     items: [
       { label: "Overview", href: "/admin/overview", icon: BarChart3 },
       { label: "Users", href: "/admin/users", icon: Users },
+      { label: "Providers", href: "/admin/providers", icon: Stethoscope },
     ],
   },
   {

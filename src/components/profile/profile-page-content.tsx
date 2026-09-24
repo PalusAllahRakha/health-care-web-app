@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail, ShieldCheck } from "lucide-react";
@@ -21,11 +22,12 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/toaster";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
 import { ProfileAvatarUpload } from "./profile-avatar-upload";
 import { ChangePasswordForm } from "./change-password-form";
 
 type ProfileFormValues = PatientProfileInput | ProviderProfileInput | AdminProfileInput;
+type ProfileTab = "personal" | "role" | "notifications" | "security";
 
 function getSchema(role: UserRole) {
   switch (role) {
@@ -96,6 +98,7 @@ export function ProfilePageContent() {
   const { user, profile, updateProfile } = useAuth();
   const role = user?.role ?? "patient";
   const schema = getSchema(role);
+  const [tab, setTab] = useState<ProfileTab>("personal");
 
   const {
     register,
@@ -235,18 +238,27 @@ export function ProfilePageContent() {
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="personal" className="space-y-4">
-        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
-          <TabsTrigger value="personal">Personal</TabsTrigger>
-          <TabsTrigger value="role">
-            {role === "patient" ? "Health info" : role === "provider" ? "Practice" : "Work"}
-          </TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
-        </TabsList>
+      <div className="space-y-4">
+        <AnimatedTabs
+          value={tab}
+          onValueChange={setTab}
+          layoutId="profile-section-tabs"
+          ariaLabel="Profile sections"
+          fit="hug"
+          size="sm"
+          options={[
+            { value: "personal", label: "Personal" },
+            {
+              value: "role",
+              label: role === "patient" ? "Health info" : role === "provider" ? "Practice" : "Work",
+            },
+            { value: "notifications", label: "Notifications" },
+            { value: "security", label: "Security" },
+          ]}
+        />
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <TabsContent value="personal">
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
+          {tab === "personal" && (
             <Card>
               <CardHeader>
                 <CardTitle>Personal information</CardTitle>
@@ -283,9 +295,10 @@ export function ProfilePageContent() {
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
+          )}
 
-          <TabsContent value="role">
+          {tab === "role" && (
+            <>
             {role === "patient" && (
               <Card>
                 <CardHeader>
@@ -381,9 +394,10 @@ export function ProfilePageContent() {
                 </CardContent>
               </Card>
             )}
-          </TabsContent>
+            </>
+          )}
 
-          <TabsContent value="notifications">
+          {tab === "notifications" && (
             <Card>
               <CardHeader>
                 <CardTitle>Notification preferences</CardTitle>
@@ -444,8 +458,9 @@ export function ProfilePageContent() {
                 />
               </CardContent>
             </Card>
-          </TabsContent>
+          )}
 
+          {tab !== "security" && (
           <div className="sticky bottom-20 z-10 mt-6 flex items-center justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface)]/95 p-4 backdrop-blur lg:bottom-4">
             <p className="flex items-center gap-2 text-sm text-[var(--color-text-disabled)]">
               <ShieldCheck className="h-4 w-4 text-[var(--color-brand-primary)]" />
@@ -462,12 +477,11 @@ export function ProfilePageContent() {
               )}
             </Button>
           </div>
+          )}
         </form>
 
-        <TabsContent value="security">
-          <ChangePasswordForm />
-        </TabsContent>
-      </Tabs>
+        {tab === "security" && <ChangePasswordForm />}
+      </div>
     </div>
   );
 }

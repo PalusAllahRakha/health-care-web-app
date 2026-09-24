@@ -132,12 +132,14 @@ Change-password on profile still expects the demo current password: `password` (
 
 1. Landing `/` — marketing page; authenticated users redirect to their role home.
 2. Login → mock delay → `mfaRequired` → `/mfa`.
-3. MFA success → `isAuthenticated`; session key `hp-auth` in `sessionStorage`; profiles under `hp-profile-{userId}`.
-4. `AuthGuard` protects shells:
+3. **Signup** (`/signup`) — tabs for Patient vs Provider; new accounts stored in `sessionStorage` (`hp-registered-accounts`), then MFA.
+4. **Forgot password** (`/forgot-password`) — tabs for Patient vs Provider account type; demo reset for known emails.
+5. MFA success → `isAuthenticated`; session key `hp-auth` in `sessionStorage`; profiles under `hp-profile-{userId}`.
+6. `AuthGuard` protects shells:
    - no user → `/login`
    - user without MFA → `/mfa`
    - wrong role → that role’s home
-5. Logout clears the session.
+7. Logout clears the session.
 
 ---
 
@@ -148,6 +150,8 @@ Change-password on profile still expects the demo current password: `password` (
 |------|-------------|
 | `/` | Marketing landing |
 | `/login` | Email + password |
+| `/signup` | Tabbed **Patient** / **Provider** signup |
+| `/forgot-password` | Tabbed **Patient** / **Provider** password reset |
 | `/mfa` | One-time code |
 
 ### Patient (`(patient)` route group)
