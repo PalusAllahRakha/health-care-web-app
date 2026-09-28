@@ -64,7 +64,7 @@ export function BookingDatetimeStep({
   );
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 h-full">
       {doctor && (
         <div className="flex items-center gap-3 rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface-muted)] p-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-primary)] text-xs font-bold text-white">

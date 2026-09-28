@@ -231,7 +231,7 @@ export function BookingModal({
               </div>
             </div>
 
-            <div className="h-[min(58vh,520px)] min-h-[320px] overflow-y-auto px-6 py-4">
+            <div className="min-h-[320px] overflow-y-auto px-6 py-4">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={step}
