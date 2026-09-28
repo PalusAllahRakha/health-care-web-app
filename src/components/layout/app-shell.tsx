@@ -28,16 +28,16 @@ export const AppShell = memo(function AppShell({
   const { logout } = useAuth();
 
   return (
-    <div className="app-canvas flex min-h-screen min-w-0 overflow-x-clip">
+    <div className="app-canvas flex h-dvh min-w-0 overflow-hidden">
       <Sidebar notificationCount={notificationCount} />
 
-      <div className="flex min-h-screen min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <Topbar notificationCount={notificationCount} />
 
         <main
           id="main-content"
           className={cn(
-            "min-w-0 flex-1 px-3 py-5 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6 sm:py-6 lg:px-8 lg:py-8 lg:pb-10 xl:px-10",
+            "relative min-h-0 min-w-0 flex-1 overflow-y-auto px-3 py-5 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:px-6 sm:pt-6 lg:px-8 lg:py-8 lg:pb-10 xl:px-10",
             className
           )}
           tabIndex={-1}

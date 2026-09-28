@@ -80,7 +80,7 @@ export function RefillModal({
           </DialogHeader>
         </div>
 
-        <div className="space-y-5 px-6 py-5">
+        <div className="space-y-5 overflow-auto px-6 py-5">
           <div className="rounded-[var(--radius-lg)] border border-[var(--color-border-subtle)] bg-[var(--color-surface-muted)] p-4">
             <p className="text-lg font-bold text-[var(--color-text-primary)]">{prescription.name}</p>
             <p className="text-sm font-medium text-[var(--color-brand-primary)]">{prescription.dosage}</p>

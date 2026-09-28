@@ -58,7 +58,7 @@ export function SessionTimeout({
     };
 
     for (const event of ACTIVITY_EVENTS) {
-      window.addEventListener(event, handleActivity, { passive: true });
+      window.addEventListener(event, handleActivity, { passive: true, capture: event === "scroll" });
     }
 
     const interval = window.setInterval(() => {
@@ -79,7 +79,7 @@ export function SessionTimeout({
 
     return () => {
       for (const event of ACTIVITY_EVENTS) {
-        window.removeEventListener(event, handleActivity);
+        window.removeEventListener(event, handleActivity, event === "scroll");
       }
       window.clearInterval(interval);
     };
